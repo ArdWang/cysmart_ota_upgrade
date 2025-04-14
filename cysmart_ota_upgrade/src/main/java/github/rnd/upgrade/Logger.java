@@ -33,22 +33,15 @@
 package github.rnd.upgrade;
 
 import android.content.Context;
-import android.os.Environment;
+//import android.os.Environment;
 import android.util.Log;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
-/**
- * This is a custom log class that will manage logs in the project. Using the
- * <b>disableLog()</b> all the logs can be disabled in the project during the
- * production stage <b> enableLog()</b> will allow to enable the logs , by
- * default the logs will be visible.<br>
- * *
- */
 public class Logger {
 
     private static String mLogTag = "CySmart Android";
@@ -58,189 +51,202 @@ public class Logger {
     private static File mDataLoggerOldFile;
     private static Context mContext;
 
+    // Set custom log tag
+    public static void setLogTag(String tag) {
+        mLogTag = tag;
+    }
+
     public static void d(String message) {
         show(Log.DEBUG, mLogTag, message);
-
     }
 
     public static void d(String tag, String message) {
         show(Log.DEBUG, tag, message);
-
     }
 
     public static void w(String message) {
         show(Log.WARN, mLogTag, message);
-
     }
 
     public static void i(String message) {
         show(Log.INFO, mLogTag, message);
-
     }
 
     public static void e(String message) {
         show(Log.ERROR, mLogTag, message);
-
     }
 
     public static void v(String message) {
-        show(Log.ERROR, mLogTag, message);
-
+        show(Log.VERBOSE, mLogTag, message);  // Fixed: was using ERROR instead of VERBOSE
     }
 
     public static void datalog(String message) {
-        // show(Log.INFO, mLogTag, message);
         saveLogData(message);
-
     }
 
-    /**
-     * print log for info/error/debug/warn/verbose
-     *
-     * @param type : <br>
-     *             Log.INFO <br>
-     *             Log.ERROR <br>
-     *             Log.DEBUG <br>
-     *             Log.WARN <br>
-     *             Log.VERBOSE Log.
-     */
     private static void show(int type, String tag, String msg) {
+        if (!mLogflag) return;
 
-        if (msg.length() > 4000) {
-            Log.i("Length ", msg.length() + "");
-
-            while (msg.length() > 4000) {
-                show(type, tag, msg.substring(0, 4000));
-                msg = msg.substring(4000, msg.length());
-
-            }
+        // Split long messages into chunks
+        while (msg.length() > 4000) {
+            String chunk = msg.substring(0, 4000);
+            msg = msg.substring(4000);
+            logChunk(type, tag, chunk);
         }
-        if (mLogflag)
-            switch (type) {
-                case Log.INFO:
-                    Log.i(tag, msg);
-                    break;
-                case Log.ERROR:
-                    Log.e(tag, msg);
-                    break;
-                case Log.DEBUG:
-                    Log.d(tag, msg);
-                    break;
-                case Log.WARN:
-                    Log.w(tag, msg);
-                    break;
-                case Log.VERBOSE:
-                    Log.v(tag, msg);
-                    break;
-                case Log.ASSERT:
-                    Log.wtf(tag, msg);
-                    break;
-                default:
-                    break;
-            }
-
+        logChunk(type, tag, msg);
     }
 
-    /**
-     * printStackTrace for exception *
-     */
-    private static void show(Exception exception) {
-        try {
-            if (mLogflag)
-                exception.printStackTrace();
+    private static void logChunk(int type, String tag, String msg) {
+        switch (type) {
+            case Log.INFO:
+                Log.i(tag, msg);
+                break;
+            case Log.ERROR:
+                Log.e(tag, msg);
+                break;
+            case Log.DEBUG:
+                Log.d(tag, msg);
+                break;
+            case Log.WARN:
+                Log.w(tag, msg);
+                break;
+            case Log.VERBOSE:
+                Log.v(tag, msg);
+                break;
+            case Log.ASSERT:
+                Log.wtf(tag, msg);
+                break;
+        }
+    }
 
-        } catch (NullPointerException e) {
-            Logger.show(e);
+    public static void show(Exception exception) {
+        if (mLogflag && exception != null) {
+            exception.printStackTrace();
         }
     }
 
     public static boolean enableLog() {
         mLogflag = true;
-        return mLogflag;
+        return true;
     }
 
     public static boolean disableLog() {
         mLogflag = false;
-        return mLogflag;
+        return false;
     }
 
     public static void createDataLoggerFile(Context context) {
-        mContext = context;
-        try {
-            /**
-             * Directory
-             */
-            mDataLoggerDirectory = new File(Environment.getExternalStorageDirectory() +
-                    File.separator
-                    + context.getResources().getString(R.string.dl_directory));
-            if (!mDataLoggerDirectory.exists()) {
-                mDataLoggerDirectory.mkdirs();
-            }
-            /**
-             * File  name
-             */
+        if (context == null) {
+            Log.e(mLogTag, "Context cannot be null");
+            return;
+        }
 
-            mDataLoggerFile = new File(mDataLoggerDirectory.getAbsoluteFile() + File.separator
-                    + Utils.GetDate() + context.getResources().getString(R.string.dl_file_extension));
-            if (!mDataLoggerFile.exists()) {
-                mDataLoggerFile.createNewFile();
+        mContext = context.getApplicationContext();
+
+        try {
+            // Use app-specific storage for better compatibility with Android 10+
+            File externalFilesDir = mContext.getExternalFilesDir(null);
+            if (externalFilesDir == null) {
+                Log.e(mLogTag, "External storage not available");
+                return;
             }
+
+            // Create directory
+            mDataLoggerDirectory = new File(externalFilesDir,
+                    context.getResources().getString(R.string.dl_directory));
+
+            if (!mDataLoggerDirectory.exists() && !mDataLoggerDirectory.mkdirs()) {
+                Log.e(mLogTag, "Failed to create directory: " + mDataLoggerDirectory.getAbsolutePath());
+                return;
+            }
+
+            // Create file
+            String fileName = Utils.GetDate() +
+                    context.getResources().getString(R.string.dl_file_extension);
+            mDataLoggerFile = new File(mDataLoggerDirectory, fileName);
+
+            if (!mDataLoggerFile.exists()) {
+                try {
+                    if (!mDataLoggerFile.createNewFile()) {
+                        Log.e(mLogTag, "Failed to create file: " + mDataLoggerFile.getAbsolutePath());
+                    }
+                } catch (IOException e) {
+                    Log.e(mLogTag, "Error creating file: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
             deleteOLDFiles();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Log.e(mLogTag, "Error in createDataLoggerFile: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
-    public static void deleteOLDFiles() {
-        /**
-         * Delete old file
-         */
+    private static void deleteOLDFiles() {
+        if (mDataLoggerDirectory == null || !mDataLoggerDirectory.exists()) {
+            return;
+        }
+
         File[] allFilesList = mDataLoggerDirectory.listFiles();
+        if (allFilesList == null) return;
+
         long cutoff = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000);
-        for (int pos = 0; pos < allFilesList.length; pos++) {
-            File currentFile = allFilesList[pos];
+
+        for (File currentFile : allFilesList) {
             if (currentFile.lastModified() < cutoff) {
-                currentFile.delete();
+                if (!currentFile.delete()) {
+                    Log.w(mLogTag, "Failed to delete old file: " + currentFile.getAbsolutePath());
+                }
             }
-
-        }
-        mDataLoggerOldFile = new File(mDataLoggerDirectory.getAbsoluteFile() + File.separator
-                + Utils.GetDateSevenDaysBack() +
-                mContext.getResources().getString(R.string.dl_file_extension));
-        if (mDataLoggerOldFile.exists()) {
-            mDataLoggerOldFile.delete();
         }
 
+        if (mContext != null) {
+            String oldFileName = Utils.GetDateSevenDaysBack() +
+                    mContext.getResources().getString(R.string.dl_file_extension);
+            mDataLoggerOldFile = new File(mDataLoggerDirectory, oldFileName);
+
+            if (mDataLoggerOldFile.exists() && !mDataLoggerOldFile.delete()) {
+                Log.w(mLogTag, "Failed to delete old file: " + mDataLoggerOldFile.getAbsolutePath());
+            }
+        }
     }
 
     private static void saveLogData(String message) {
-        mDataLoggerFile = new File(mDataLoggerDirectory.getAbsoluteFile() + File.separator
-                + Utils.GetDate() + mContext.getResources().getString(R.string.dl_file_extension));
+        if (mDataLoggerDirectory == null || !mDataLoggerDirectory.exists()) {
+            Log.e(mLogTag, "Log directory not initialized");
+            return;
+        }
+
+        // Recreate file if needed
+        if (mContext != null) {
+            String fileName = Utils.GetDate() +
+                    mContext.getResources().getString(R.string.dl_file_extension);
+            mDataLoggerFile = new File(mDataLoggerDirectory, fileName);
+        }
+
         if (!mDataLoggerFile.exists()) {
             try {
-                mDataLoggerFile.createNewFile();
+                if (!mDataLoggerFile.createNewFile()) {
+                    Log.e(mLogTag, "Failed to create log file");
+                    return;
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(mLogTag, "Error creating log file: " + e.getMessage());
+                return;
             }
         }
+
         message = Utils.GetTimeandDate() + message;
-        try {
-            OutputStreamWriter writer = new OutputStreamWriter(
-                    new FileOutputStream(mDataLoggerFile, true),
-                    "UTF-8");
-            BufferedWriter fbw = new BufferedWriter(writer);
+
+        try (BufferedWriter fbw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(mDataLoggerFile, true),
+                        StandardCharsets.UTF_8))) {
             fbw.write(message);
             fbw.newLine();
-            fbw.flush();
-            fbw.close();
-
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(mLogTag, "Error writing to log file: " + e.getMessage());
         }
-
     }
-
 }
