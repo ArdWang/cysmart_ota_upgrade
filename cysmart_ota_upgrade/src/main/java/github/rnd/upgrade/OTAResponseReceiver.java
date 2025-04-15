@@ -10,7 +10,7 @@ import android.os.Bundle;
 /**
  * Receiver class for OTA response
  */
-public class OTAResponseReceiver extends BroadcastReceiver {
+public class OtaResponseReceiver extends BroadcastReceiver {
     private Context mContext;
     //Substring Constants
     private static final int RESPONSE_START = 2;
@@ -68,7 +68,7 @@ public class OTAResponseReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         this.mContext = context;
-        /**
+        /*
          * Condition to execute the next command to execute
          * Checks the Shared preferences for the currently executing command
          *
@@ -108,21 +108,17 @@ public class OTAResponseReceiver extends BroadcastReceiver {
         String result = hexValue.trim().replace(" ", "");
         String response = result.substring(RESPONSE_START, RESPONSE_END);
         String status = result.substring(STATUS_START, STATUS_END);
-        int reponseBytes = Integer.parseInt(response, RADIX);
-        switch (reponseBytes) {
-            case CASE_SUCCESS:
-                //Logger.i("CYRET_SUCCESS");
-                Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(Constants.EXTRA_SEND_DATA_ROW_STATUS,
-                        status);
-                intent.putExtras(mBundle);
-                mContext.sendBroadcast(intent);
-                break;
-            default:
-                broadCastErrors(reponseBytes);
-                //Logger.i("CYRET ERROR");
-                break;
+        int responseBytes = Integer.parseInt(response, RADIX);
+        if (responseBytes == CASE_SUCCESS) {//Logger.i("CYRET_SUCCESS");
+            Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
+            Bundle mBundle = new Bundle();
+            mBundle.putString(Constants.EXTRA_SEND_DATA_ROW_STATUS,
+                    status);
+            intent.putExtras(mBundle);
+            mContext.sendBroadcast(intent);
+        } else {
+            broadCastErrors(responseBytes);
+            //Logger.i("CYRET ERROR");
         }
     }
 
@@ -165,24 +161,20 @@ public class OTAResponseReceiver extends BroadcastReceiver {
         String result = parse.trim().replace(" ", "");
         String response = result.substring(RESPONSE_START, RESPONSE_END);
         //Logger.e("Get flash size Response>>>>>" + result);
-        int reponseBytes = Integer.parseInt(response, RADIX);
-        switch (reponseBytes) {
-            case CASE_SUCCESS:
-                //Logger.i("CYRET_SUCCESS");
-                int startRow = BootLoaderUtils.swap(Integer.parseInt(result.substring(START_ROW_START, START_ROW_END), RADIX));
-                int endRow = BootLoaderUtils.swap(Integer.parseInt(result.substring(END_ROW_START, END_ROW_END), RADIX));
-                Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(Constants.EXTRA_START_ROW,
-                        "" + startRow);
-                mBundle.putString(Constants.EXTRA_END_ROW, "" + endRow);
-                intent.putExtras(mBundle);
-                mContext.sendBroadcast(intent);
-                break;
-            default:
-                broadCastErrors(reponseBytes);
-                //Logger.i("CYRET ERROR");
-                break;
+        int responseBytes = Integer.parseInt(response, RADIX);
+        if (responseBytes == CASE_SUCCESS) {//Logger.i("CYRET_SUCCESS");
+            int startRow = BootLoaderUtils.swap(Integer.parseInt(result.substring(START_ROW_START, START_ROW_END), RADIX));
+            int endRow = BootLoaderUtils.swap(Integer.parseInt(result.substring(END_ROW_START, END_ROW_END), RADIX));
+            Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
+            Bundle mBundle = new Bundle();
+            mBundle.putString(Constants.EXTRA_START_ROW,
+                    "" + startRow);
+            mBundle.putString(Constants.EXTRA_END_ROW, "" + endRow);
+            intent.putExtras(mBundle);
+            mContext.sendBroadcast(intent);
+        } else {
+            broadCastErrors(responseBytes);
+            //Logger.i("CYRET ERROR");
         }
     }
 
@@ -196,21 +188,17 @@ public class OTAResponseReceiver extends BroadcastReceiver {
         String result = parse.trim().replace(" ", "");
         String response = result.substring(RESPONSE_START, RESPONSE_END);
         String status = result.substring(STATUS_START, STATUS_END);
-        int reponseBytes = Integer.parseInt(response, RADIX);
-        switch (reponseBytes) {
-            case CASE_SUCCESS:
-                //Logger.i("CYRET_SUCCESS");
-                Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(Constants.EXTRA_PROGRAM_ROW_STATUS,
-                        status);
-                intent.putExtras(mBundle);
-                mContext.sendBroadcast(intent);
-                break;
-            default:
-                broadCastErrors(reponseBytes);
-                //Logger.i("CYRET ERROR");
-                break;
+        int responseBytes = Integer.parseInt(response, RADIX);
+        if (responseBytes == CASE_SUCCESS) {//Logger.i("CYRET_SUCCESS");
+            Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
+            Bundle mBundle = new Bundle();
+            mBundle.putString(Constants.EXTRA_PROGRAM_ROW_STATUS,
+                    status);
+            intent.putExtras(mBundle);
+            mContext.sendBroadcast(intent);
+        } else {
+            broadCastErrors(responseBytes);
+            //Logger.i("CYRET ERROR");
         }
     }
 
@@ -223,23 +211,19 @@ public class OTAResponseReceiver extends BroadcastReceiver {
         String result = parse.trim().replace(" ", "");
         String response = result.substring(RESPONSE_START, RESPONSE_END);
         String data = result.substring(DATA_START, DATA_END);
-        int reponseBytes = Integer.parseInt(response, RADIX);
-        switch (reponseBytes) {
-            case CASE_SUCCESS:
-                //Logger.i("CYRET_SUCCESS");
-                Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(Constants.EXTRA_VERIFY_ROW_STATUS,
-                        response);
-                mBundle.putString(Constants.EXTRA_VERIFY_ROW_CHECKSUM,
-                        data);
-                intent.putExtras(mBundle);
-                mContext.sendBroadcast(intent);
-                break;
-            default:
-                broadCastErrors(reponseBytes);
-                //Logger.i("CYRET ERROR");
-                break;
+        int responseBytes = Integer.parseInt(response, RADIX);
+        if (responseBytes == CASE_SUCCESS) {//Logger.i("CYRET_SUCCESS");
+            Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
+            Bundle mBundle = new Bundle();
+            mBundle.putString(Constants.EXTRA_VERIFY_ROW_STATUS,
+                    response);
+            mBundle.putString(Constants.EXTRA_VERIFY_ROW_CHECKSUM,
+                    data);
+            intent.putExtras(mBundle);
+            mContext.sendBroadcast(intent);
+        } else {
+            broadCastErrors(responseBytes);
+            //Logger.i("CYRET ERROR");
         }
     }
 
@@ -252,21 +236,17 @@ public class OTAResponseReceiver extends BroadcastReceiver {
         String result = parse.trim().replace(" ", "");
         String response = result.substring(RESPONSE_START, RESPONSE_END);
         String checkSumStatus = result.substring(CHECKSUM_START, CHECKSUM_END);
-        int reponseBytes = Integer.parseInt(response, RADIX);
-        switch (reponseBytes) {
-            case CASE_SUCCESS:
-                //Logger.i("CYRET_SUCCESS");
-                Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(Constants.EXTRA_VERIFY_CHECKSUM_STATUS,
-                        checkSumStatus);
-                intent.putExtras(mBundle);
-                mContext.sendBroadcast(intent);
-                break;
-            default:
-                broadCastErrors(reponseBytes);
-               // Logger.i("CYRET ERROR");
-                break;
+        int responseBytes = Integer.parseInt(response, RADIX);
+        if (responseBytes == CASE_SUCCESS) {//Logger.i("CYRET_SUCCESS");
+            Intent intent = new Intent(BootLoaderUtils.ACTION_OTA_STATUS);
+            Bundle mBundle = new Bundle();
+            mBundle.putString(Constants.EXTRA_VERIFY_CHECKSUM_STATUS,
+                    checkSumStatus);
+            intent.putExtras(mBundle);
+            mContext.sendBroadcast(intent);
+        } else {
+            broadCastErrors(responseBytes);
+            // Logger.i("CYRET ERROR");
         }
     }
 

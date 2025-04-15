@@ -9,7 +9,6 @@ import github.rnd.upgrade.BluetoothLeService
  */
 class MainActivity : AppCompatActivity(){
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -17,6 +16,11 @@ class MainActivity : AppCompatActivity(){
         print(BluetoothLeService.ACTION_GATT_CONNECTED)
 
     }
+
+
+    /// usage  读取蓝牙列表
+
+
 
 
 }

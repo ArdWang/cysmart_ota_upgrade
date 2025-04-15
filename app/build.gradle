@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace 'github.rnd.cysmart_ota_upgrade'
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "github.rnd.cysmart_ota_upgrade"
         minSdk 19
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        targetSdk 34
+        versionCode 2
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

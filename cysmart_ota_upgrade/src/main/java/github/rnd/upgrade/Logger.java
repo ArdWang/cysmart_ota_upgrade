@@ -32,8 +32,8 @@
 
 package github.rnd.upgrade;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-//import android.os.Environment;
 import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,6 +42,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
+
+/**
+ * Update Android 14+
+ */
+
 public class Logger {
 
     private static String mLogTag = "CySmart Android";
@@ -49,6 +54,7 @@ public class Logger {
     private static File mDataLoggerDirectory;
     private static File mDataLoggerFile;
     private static File mDataLoggerOldFile;
+    @SuppressLint("StaticFieldLeak")
     private static Context mContext;
 
     // Set custom log tag

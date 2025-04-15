@@ -1,9 +1,13 @@
 package github.rnd.upgrade.model;
 
+import android.net.Uri;
+
 /**
  * Data Model class for OTA File
+ * 2025/4/15
+ * Add FileUri use Android 14+
  */
-public class OTAFileModel {
+public class OtaFileModel {
     /**
      *File name
      */
@@ -12,6 +16,14 @@ public class OTAFileModel {
      *File path
      */
     private String mFilePath = null;
+
+
+    /**
+     * File Uri
+     */
+    private Uri mFileUri = null;
+
+
     /**
      * File parent
      */
@@ -24,15 +36,16 @@ public class OTAFileModel {
 
 
     // Constructor
-    public OTAFileModel(String fileName, String filePath, boolean selected, String fileParent) {
+    public OtaFileModel(String fileName, String filePath, Uri fileUri, boolean selected, String fileParent) {
         super();
         this.mFileName = fileName;
         this.mFilePath = filePath;
+        this.mFileUri = fileUri;
         this.mSelected = selected;
         this.mFileParent = fileParent;
     }
 
-    public OTAFileModel() {
+    public OtaFileModel() {
         super();
     }
 
@@ -54,6 +67,14 @@ public class OTAFileModel {
 
     public String getFilePath() {
         return mFilePath;
+    }
+
+    public Uri getmFileUri() {
+        return mFileUri;
+    }
+
+    public void setmFileUri(Uri mFileUri) {
+        this.mFileUri = mFileUri;
     }
 
     public void setName(String mFilePath) {
