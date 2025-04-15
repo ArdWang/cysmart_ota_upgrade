@@ -6,6 +6,8 @@
 support 34
 
 ```
+https://jitpack.io
+
 dependencies {
    implementation 'com.github.ArdWang:cysmart_ota_upgrade:1.3'
 }
