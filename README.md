@@ -1,5 +1,8 @@
 # cysmart_ota_upgrade
- This is cysmart_ota_upgrade
+
+[![](https://jitpack.io/v/ArdWang/cysmart_ota_upgrade.svg)](https://jitpack.io/#ArdWang/cysmart_ota_upgrade)
+ 
+This is cysmart_ota_upgrade
 
 ##### April 15 Tuesday
 
