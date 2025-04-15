@@ -10,7 +10,7 @@ import android.os.Bundle;
 /**
  * Receiver class for OTA response
  */
-public class OtaResponseReceiver extends BroadcastReceiver {
+public class OTAResponseReceiver extends BroadcastReceiver {
     private Context mContext;
     //Substring Constants
     private static final int RESPONSE_START = 2;

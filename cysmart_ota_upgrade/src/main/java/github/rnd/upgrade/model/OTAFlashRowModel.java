@@ -35,7 +35,7 @@ package github.rnd.upgrade.model;
 /**
  * Data Model class for OTA File
  */
-public class OtaFlashRowModel {
+public class OTAFlashRowModel {
     public int mArrayId;          //数组的id
     public String mRowNo;         //每行的数字
     public int mDataLength;       //data length

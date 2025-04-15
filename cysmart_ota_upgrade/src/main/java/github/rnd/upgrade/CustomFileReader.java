@@ -41,7 +41,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import github.rnd.upgrade.model.OtaFlashRowModel;
+import github.rnd.upgrade.model.OTAFlashRowModel;
 
 
 /**
@@ -92,8 +92,8 @@ public class CustomFileReader {
      * 解析一个读取每行的文件的方法，并把该行到一个数据模型
      * @return
      */
-    public ArrayList<OtaFlashRowModel> readDataLines() {
-        ArrayList<OtaFlashRowModel> flashDataLines = new ArrayList<>();
+    public ArrayList<OTAFlashRowModel> readDataLines() {
+        ArrayList<OTAFlashRowModel> flashDataLines = new ArrayList<>();
         String dataLine;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(mFile));
@@ -102,7 +102,7 @@ public class CustomFileReader {
                 mFileReadStatusUpdaterUpdater.onFileReadProgressUpdate(mReadingLine);
                 byte[] data;
 
-                OtaFlashRowModel model = new OtaFlashRowModel();
+                OTAFlashRowModel model = new OTAFlashRowModel();
                 if (mReadingLine != 1) {
                     StringBuilder dataBuilder = new StringBuilder(dataLine);
                     dataBuilder.deleteCharAt(0);  //删除第一个字

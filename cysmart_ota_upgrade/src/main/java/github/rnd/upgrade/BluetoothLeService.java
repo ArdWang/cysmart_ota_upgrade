@@ -35,6 +35,7 @@ package github.rnd.upgrade;
 
 import static android.bluetooth.BluetoothDevice.TRANSPORT_LE;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -153,6 +154,7 @@ public class BluetoothLeService extends Service {
      * example,connection change and services discovered.
      */
     private final static BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 
@@ -496,6 +498,7 @@ public class BluetoothLeService extends Service {
         }
     };
 
+    @SuppressLint({"MissingPermission", "NewApi"})
     public static void exchangeGattMtu(int mtu) {
 
         int retry = 5;
@@ -624,6 +627,7 @@ public class BluetoothLeService extends Service {
      * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
      * callback.
      */
+    @SuppressLint("MissingPermission")
     public static void connect(final String address, final String devicename, Context context) {
         mContext = context;
         if (mBluetoothAdapter == null || address == null) {
@@ -681,6 +685,7 @@ public class BluetoothLeService extends Service {
     /**
      * Reconnect method to connect to already connected device
      */
+    @SuppressLint("MissingPermission")
     public static void reconnect() {
         Logger.e("<--Reconnecting device-->");
         BluetoothDevice device = mBluetoothAdapter
@@ -706,6 +711,7 @@ public class BluetoothLeService extends Service {
     /**
      * Reconnect method to connect to already connected device
      */
+    @SuppressLint("MissingPermission")
     public static void reDiscoverServices() {
         Logger.e("<--Rediscovering services-->");
         BluetoothDevice device = mBluetoothAdapter
@@ -751,6 +757,7 @@ public class BluetoothLeService extends Service {
      * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
      * callback.
      */
+    @SuppressLint("MissingPermission")
     public static void disconnect() {
         Logger.i("disconnect called");
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
@@ -775,7 +782,7 @@ public class BluetoothLeService extends Service {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             return false;
         } else {
-            boolean result = mBluetoothGatt.discoverServices();
+            @SuppressLint("MissingPermission") boolean result = mBluetoothGatt.discoverServices();
             String dataLog = mContext.getResources().getString(R.string.dl_commaseparator)
                     + "[" + mBluetoothDeviceName + "|" + mBluetoothDeviceAddress + "] " +
                     mContext.getResources().getString(R.string.dl_service_discovery_request);
@@ -791,6 +798,7 @@ public class BluetoothLeService extends Service {
      *
      * @param characteristic The characteristic to read from.
      */
+    @SuppressLint("MissingPermission")
     public static void readCharacteristic(BluetoothGattCharacteristic characteristic) {
         String serviceUUID = characteristic.getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(characteristic.getService().getUuid(), serviceUUID);
@@ -812,6 +820,7 @@ public class BluetoothLeService extends Service {
      *
      * @param descriptor The descriptor to read from.
      */
+    @SuppressLint("MissingPermission")
     public static void readDescriptor(BluetoothGattDescriptor descriptor) {
         String serviceUUID = descriptor.getCharacteristic().getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(descriptor.getCharacteristic().getService().getUuid(), serviceUUID);
@@ -836,6 +845,7 @@ public class BluetoothLeService extends Service {
      * @param characteristic
      * @param byteArray      to write
      */
+    @SuppressLint("MissingPermission")
     public static void writeCharacteristicNoresponse(BluetoothGattCharacteristic characteristic, byte[] byteArray) {
         String serviceUUID = characteristic.getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(characteristic.getService().getUuid(), serviceUUID);
@@ -872,6 +882,7 @@ public class BluetoothLeService extends Service {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public static void writeOTABootLoaderCommand(BluetoothGattCharacteristic characteristic, byte[] value) {
         String serviceUUID = characteristic.getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(characteristic.getService().getUuid(), serviceUUID);
@@ -937,6 +948,7 @@ public class BluetoothLeService extends Service {
      * @param byteArray
      */
 
+    @SuppressLint("MissingPermission")
     public static void writeCharacteristicGattDb(BluetoothGattCharacteristic characteristic, byte[] byteArray) {
         String serviceUUID = characteristic.getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(characteristic.getService().getUuid(), serviceUUID);
@@ -967,6 +979,7 @@ public class BluetoothLeService extends Service {
      * @param characteristic the characteristic to write to
      * @return true if request has been sent
      */
+    @SuppressLint("MissingPermission")
     public static final boolean writeCharacteristic(final BluetoothGattCharacteristic characteristic) {
         final BluetoothGatt gatt = mBluetoothGatt;
         if (gatt == null || characteristic == null)
@@ -992,6 +1005,7 @@ public class BluetoothLeService extends Service {
      * @param blue
      * @param intensity
      */
+    @SuppressLint("MissingPermission")
     public static void writeCharacteristicRGB(BluetoothGattCharacteristic characteristic, int red, int green,
                                               int blue, int intensity) {
         String serviceUUID = characteristic.getService().getUuid().toString();
@@ -1027,6 +1041,7 @@ public class BluetoothLeService extends Service {
      * @param characteristic Characteristic to act on.
      * @param enabled        If true, enable notification. False otherwise.
      */
+    @SuppressLint("MissingPermission")
     public static void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
         String serviceUUID = characteristic.getService().getUuid().toString();
         String serviceName = GattAttributes.lookupUUID(characteristic.getService().getUuid(), serviceUUID);
@@ -1090,6 +1105,7 @@ public class BluetoothLeService extends Service {
      * @param characteristic Characteristic to act on.
      * @param enabled        If true, enable indications. False otherwise.
      */
+    @SuppressLint("MissingPermission")
     public static void setCharacteristicIndication(
             BluetoothGattCharacteristic characteristic, boolean enabled) {
         String serviceUUID = characteristic.getService().getUuid().toString();
@@ -1174,6 +1190,7 @@ public class BluetoothLeService extends Service {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public static boolean getBondedState() {
         Boolean bonded;
         BluetoothDevice device = mBluetoothAdapter
@@ -1225,7 +1242,7 @@ public class BluetoothLeService extends Service {
     }
 
     public static void disableAllEnabledCharacteristics() {
-        if (mEnabledCharacteristics.size() > 0) {
+        if (!mEnabledCharacteristics.isEmpty()) {
             mDisableNotificationFlag = true;
             BluetoothGattCharacteristic bluetoothGattCharacteristic = mEnabledCharacteristics.
                     get(0);
@@ -1238,7 +1255,7 @@ public class BluetoothLeService extends Service {
     }
 
     public static void enableAllRDKCharacteristics() {
-        if (mRDKCharacteristics.size() > 0) {
+        if (!mRDKCharacteristics.isEmpty()) {
             mEnableRDKNotificationFlag = true;
             BluetoothGattCharacteristic bluetoothGattCharacteristic = mRDKCharacteristics.
                     get(0);
@@ -1247,14 +1264,13 @@ public class BluetoothLeService extends Service {
         } else {
             Logger.e("All RDK Chara enabled");
             mEnableRDKNotificationFlag = false;
-            String intentAction = ACTION_WRITE_COMPLETED;
-            broadcastWritwStatusUpdate(intentAction);
+            broadcastWritwStatusUpdate(ACTION_WRITE_COMPLETED);
         }
 
     }
 
     public static void enableAllGlucoseCharacteristics() {
-        if (mGlucoseCharacteristics.size() > 0) {
+        if (!mGlucoseCharacteristics.isEmpty()) {
             mEnableGlucoseFlag = true;
             BluetoothGattCharacteristic bluetoothGattCharacteristic = mGlucoseCharacteristics.
                     get(0);
@@ -1268,8 +1284,7 @@ public class BluetoothLeService extends Service {
         } else {
             Logger.e("All Gluocse Char enabled");
             mEnableGlucoseFlag = false;
-            String intentAction = ACTION_WRITE_COMPLETED;
-            broadcastWritwStatusUpdate(intentAction);
+            broadcastWritwStatusUpdate(ACTION_WRITE_COMPLETED);
         }
     }
 
@@ -1277,6 +1292,7 @@ public class BluetoothLeService extends Service {
      * After using a given BLE device, the app must call this method to ensure
      * resources are released properly.
      */
+    @SuppressLint("MissingPermission")
     public static void close() {
         if (mBluetoothGatt != null) {
             mBluetoothGatt.close();

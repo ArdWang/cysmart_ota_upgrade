@@ -36,14 +36,14 @@ package github.rnd.upgrade;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 
-import github.rnd.upgrade.model.OtaFlashRowModel;
+import github.rnd.upgrade.model.OTAFlashRowModel;
 
 
 /**
  * Separate class for handling the write operation during OTA firmware upgrade
  * 处理写操作的OTA固件升级在单独的类
  */
-public class OtaFirmwareWrite {
+public class OTAFirmwareWrite {
 
     private final BluetoothGattCharacteristic mOTACharacteristic;
 
@@ -67,7 +67,7 @@ public class OtaFirmwareWrite {
     private static  final int BYTE_ARRAY_SIZE = 7;
 
 
-    public OtaFirmwareWrite(BluetoothGattCharacteristic writeCharacteristic) {
+    public OTAFirmwareWrite(BluetoothGattCharacteristic writeCharacteristic) {
         this.mOTACharacteristic = writeCharacteristic;
     }
 
@@ -189,7 +189,7 @@ public class OtaFirmwareWrite {
      * OTA Bootloader Verify row Command
      *
      */
-    public void OTAVerifyRowCmd(long rowMSB, long rowLSB, OtaFlashRowModel model,
+    public void OTAVerifyRowCmd(long rowMSB, long rowLSB, OTAFlashRowModel model,
                                 String checkSumType) {
         int COMMAND_DATA_SIZE = 3;
         int COMMAND_SIZE = BootLoaderCommands.BASE_CMD_SIZE + COMMAND_DATA_SIZE;

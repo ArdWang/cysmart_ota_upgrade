@@ -7,7 +7,7 @@ import android.net.Uri;
  * 2025/4/15
  * Add FileUri use Android 14+
  */
-public class OtaFileModel {
+public class OTAFileModel {
     /**
      *File name
      */
@@ -36,7 +36,7 @@ public class OtaFileModel {
 
 
     // Constructor
-    public OtaFileModel(String fileName, String filePath, Uri fileUri, boolean selected, String fileParent) {
+    public OTAFileModel(String fileName, String filePath, Uri fileUri, boolean selected, String fileParent) {
         super();
         this.mFileName = fileName;
         this.mFilePath = filePath;
@@ -45,7 +45,7 @@ public class OtaFileModel {
         this.mFileParent = fileParent;
     }
 
-    public OtaFileModel() {
+    public OTAFileModel() {
         super();
     }
 
