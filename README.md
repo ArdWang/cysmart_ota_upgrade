@@ -4,6 +4,10 @@
  
 This is cysmart_ota_upgrade
 
+##### May 6 Tuesday
+
+support 35
+
 ##### April 15 Tuesday
 
 support 34
